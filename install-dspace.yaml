@@ -1,0 +1,27 @@
+- name: Instalando DSpace
+  hosts: all
+  become: yes
+  vars:
+    local_dspace_path: "/home/fasipe/ansible-for-dspace/DSpace-dspace-9.1.tar.gz"
+  tasks:
+
+   - name: 
+
+   - name: Transfer DSpace archive to remote server
+     copy:
+       src: "{{ local_dspace_path }}"
+       dest: "/tmp/DSpace-dspace-9.1.tar.gz"
+       mode: '0644'
+       backup: yes
+     register: transfer_result
+
+   - name: Extract DSpace
+     unarchive:
+        src: "/tmp/DSpace-dspace-9.1.tar.gz"
+        dest: /tmp
+        remote_src: yes
+        creates: "/tmp/DSpace-dspace-9.1"
+
+   - name: Copy DSpace files to installation directory
+     shell: |
+        cp -r /tmp/DSpace-dspace-9.1/* dspace/

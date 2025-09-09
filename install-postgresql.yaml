@@ -1,0 +1,36 @@
+---
+- name: Instalar PostgreSQL no servidor
+  hosts: all
+  become: yes
+  vars:
+    postgresql_version: "16"  # Substitua pela última versão estável
+  tasks:
+    - name: Atualizar cache de pacotes
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Instalar dependências para adicionar repositório
+      apt:
+        name: 
+          - gnupg
+          - wget
+          - ca-certificates
+        state: present
+
+    - name: Instalar PostgreSQL
+      apt:
+        name: postgresql
+        state: present
+
+    - name: Instalar Pacotes comuns PostgreSQL
+      apt:
+        name: postgresql-common
+        state: present
+
+    - name: Garantir que o serviço PostgreSQL está ativo e habilitado
+      service:
+        name: postgresql
+        state: started
+        enabled: yes
+

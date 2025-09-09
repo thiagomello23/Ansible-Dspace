@@ -1,0 +1,17 @@
+[Unit]
+Description=Apache Solr Service
+After=network.target
+
+[Service]
+Type=forking
+User=solr
+Group=solr
+ExecStart=/opt/solr/bin/solr start
+ExecStop=/opt/solr/bin/solr stop
+ExecReload=/opt/solr/bin/solr restart
+Restart=on-failure
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target
+

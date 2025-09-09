@@ -1,0 +1,48 @@
+---
+- name: Instalar Apache Ant mais recente
+  hosts: aws-host
+  become: yes
+  vars:
+    ant_version: "1.10.15"   # última versão estável (set/2025)
+    ant_install_dir: "/opt/ant"
+
+  tasks:
+    - name: Instalar dependências necessárias
+      apt:
+        name:
+          - wget
+          - tar
+        state: present
+        update_cache: yes
+
+    - name: Baixar Apache Ant
+      get_url:
+        url: "https://dlcdn.apache.org//ant/binaries/apache-ant-1.10.15-bin.tar.gz"
+        dest: "/tmp/apache-ant-{{ ant_version }}-bin.tar.gz"
+
+    - name: Criar diretório de instalação do Ant
+      file:
+        path: "{{ ant_install_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Extrair Ant
+      unarchive:
+        src: "/tmp/apache-ant-{{ ant_version }}-bin.tar.gz"
+        dest: "{{ ant_install_dir }}"
+        remote_src: yes
+        creates: "{{ ant_install_dir }}/apache-ant-{{ ant_version }}"
+
+    - name: Configurar variáveis de ambiente do Ant
+      copy:
+        dest: /etc/profile.d/ant.sh
+        content: |
+          export ANT_HOME={{ ant_install_dir }}/apache-ant-{{ ant_version }}
+          export PATH=$ANT_HOME/bin:$PATH
+        mode: '0755'
+
+    - name: Tornar configuração disponível
+      shell: source /etc/profile.d/ant.sh
+      args:
+        executable: /bin/bash
+

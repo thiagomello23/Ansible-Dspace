@@ -1,0 +1,99 @@
+- name: Install and Configure Apache Solr 9.x for DSpace
+  hosts: all
+  become: yes
+  vars:
+    solr_version: "9.9.0"  # Ajuste para a versão desejada (anterior a 9.8 para evitar configuração adicional)
+    solr_user: "solr"
+    solr_group: "solr"
+    solr_home: "/opt/solr"
+    solr_data_dir: "/var/solr"
+    solr_port: 8983
+    java_home: "/usr/lib/jvm/java-17-openjdk-amd64"  # Ajuste conforme sua instalação Java
+    local_solr_path: "/home/fasipe/ansible-for-dspace/solr-9.9.0-slim.tgz" 
+
+  tasks:
+    - name: Create solr group
+      group:
+        name: "{{ solr_group }}"
+        state: present
+
+    - name: Create solr user
+      user:
+        name: "{{ solr_user }}"
+        group: "{{ solr_group }}"
+        system: yes
+        shell: /bin/bash
+        home: "{{ solr_data_dir }}"
+        createhome: no
+
+    - name: Create Solr directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ solr_user }}"
+        group: "{{ solr_group }}"
+        mode: '0755'
+      loop:
+        - "{{ solr_home }}"
+        - "{{ solr_data_dir }}"
+        - "{{ solr_data_dir }}/data"
+        - "{{ solr_data_dir }}/logs"
+
+    - name: Transfer Solr archive to remote server
+      copy:
+        src: "{{ local_solr_path }}"
+        dest: "/tmp/solr-{{ solr_version }}-slim.tgz"
+        mode: '0644'
+        backup: yes
+      register: transfer_result
+
+    - name: Extract Solr
+      unarchive:
+        src: "/tmp/solr-{{ solr_version }}-slim.tgz"
+        dest: /tmp
+        remote_src: yes
+        creates: "/tmp/solr-{{ solr_version }}-slim"
+
+    - name: Copy Solr files to installation directory
+      shell: |
+        cp -r /tmp/solr-{{ solr_version }}-slim/* {{ solr_home }}/
+        chown -R {{ solr_user }}:{{ solr_group }} {{ solr_home }}
+
+    - name: Configure firewall for Solr (block external access)
+      firewalld:
+        port: "{{ solr_port }}/tcp"
+        permanent: yes
+        state: disabled
+        zone: public
+      when: ansible_os_family == "RedHat"
+      ignore_errors: yes
+
+    - name: Configure iptables to block external Solr access
+      iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: "{{ solr_port }}"
+        source: "!127.0.0.1"
+        jump: DROP
+        comment: "Block external access to Solr"
+      when: ansible_os_family == "Debian"
+      ignore_errors: yes
+
+    - name: Clean up downloaded files
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "/tmp/solr-{{ solr_version }}.tgz"
+        - "/tmp/solr-{{ solr_version }}"
+
+  handlers:
+    - name: reload systemd
+      systemd:
+        daemon_reload: yes
+
+    - name: restart solr
+      systemd:
+        name: solr
+        state: restarted
+        enabled: yes
