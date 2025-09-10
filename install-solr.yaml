@@ -59,26 +59,6 @@
         cp -r /tmp/solr-{{ solr_version }}-slim/* {{ solr_home }}/
         chown -R {{ solr_user }}:{{ solr_group }} {{ solr_home }}
 
-    - name: Configure firewall for Solr (block external access)
-      firewalld:
-        port: "{{ solr_port }}/tcp"
-        permanent: yes
-        state: disabled
-        zone: public
-      when: ansible_os_family == "RedHat"
-      ignore_errors: yes
-
-    - name: Configure iptables to block external Solr access
-      iptables:
-        chain: INPUT
-        protocol: tcp
-        destination_port: "{{ solr_port }}"
-        source: "!127.0.0.1"
-        jump: DROP
-        comment: "Block external access to Solr"
-      when: ansible_os_family == "Debian"
-      ignore_errors: yes
-
     - name: Clean up downloaded files
       file:
         path: "{{ item }}"

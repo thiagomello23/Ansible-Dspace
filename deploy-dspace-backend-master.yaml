@@ -6,3 +6,4 @@
 - import_playbook: install-solr.yaml
 - import_playbook: config-solr.yaml
 - import_playbook: install-dspace.yaml
+- import_playbook: run-dspace.yaml

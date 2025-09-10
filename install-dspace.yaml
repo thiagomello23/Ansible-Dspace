@@ -34,7 +34,6 @@
         recurse: yes
      loop: 
         - /dspace
-        # - /dspace-installer
 
    - name: Transfer DSpace archive to remote server
      copy:
@@ -131,3 +130,24 @@
      become_user: "{{ dspace_user }}"
      environment:
       PATH: "/opt/ant/apache-ant-1.10.15/bin:{{ ansible_env.PATH }}"
+
+   - name: Rodando migration no DSpace instalado
+     command: /dspace-installation/bin/dspace database migrate
+     become: true
+     become_user: dspace
+
+   - name: Copiar configsets do DSpace para o Solr
+     command: cp -R /dspace-installation/solr/. /opt/solr/server/solr/configsets/
+
+   - name: Ajustar permissões dos configsets do Solr
+     file:
+        path: /opt/solr/server/solr/configsets/
+        owner: solr
+        group: solr
+        recurse: yes
+
+   - name: Reiniciando Solr
+     systemd:
+        name: solr
+        state: restarted
+        enabled: yes
