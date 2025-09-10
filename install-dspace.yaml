@@ -3,9 +3,38 @@
   become: yes
   vars:
     local_dspace_path: "/home/fasipe/ansible-for-dspace/DSpace-dspace-9.1.tar.gz"
+    dspace_user: dspace
+    dspace_group: dspace
+    db_name: dspace
+    db_user: dspace
+    db_password: dspace
+
   tasks:
 
-   - name: 
+   - name: Create DSpace group
+     group:
+        name: "{{ dspace_group }}"
+        state: present
+
+   - name: Create DSpace user
+     user:
+        name: "{{ dspace_user }}"
+        group: "{{ dspace_group }}"
+        system: yes
+        shell: /bin/bash
+        createhome: yes
+
+   - name: Create DSpace Directories
+     file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ dspace_user }}"
+        group: "{{ dspace_group }}"
+        mode: '0755'
+        recurse: yes
+     loop: 
+        - /dspace
+        # - /dspace-installer
 
    - name: Transfer DSpace archive to remote server
      copy:
@@ -24,4 +53,81 @@
 
    - name: Copy DSpace files to installation directory
      shell: |
-        cp -r /tmp/DSpace-dspace-9.1/* dspace/
+        cp -r /tmp/DSpace-dspace-9.1/* /dspace/
+
+   - name: Instalar dependências do Ansible para PostgreSQL
+     apt:
+        name: 
+          - python3-psycopg2
+          - libpq-dev
+        state: present
+     become: yes
+
+   - name: Criar usuário do PostgreSQL
+     community.postgresql.postgresql_user:
+        name: "{{ db_user }}"
+        password: "{{ db_password }}"
+        role_attr_flags: NOSUPERUSER
+     become: yes
+     become_user: postgres   # 👈 roda como o usuário postgres do sistema
+
+   - name: Criar banco de dados
+     community.postgresql.postgresql_db:
+        name: "{{ db_name }}"
+        owner: "{{ db_user }}"
+        encoding: "UNICODE"
+     become: yes
+     become_user: postgres   # 👈 idem
+
+   - name: Habilitar extensão pgcrypto no PostgreSQL
+     become: yes
+     become_user: postgres
+     postgresql_ext:
+        name: pgcrypto
+        db: dspace
+        state: present
+
+   - name: Enviar local.cfg do DSpace
+     copy:
+        src: ./local.cfg           # caminho no seu Ansible control node
+        dest: /dspace/dspace/config/local.cfg  # caminho no servidor
+        owner: dspace
+        group: dspace
+        mode: "0644"
+
+   - name: Definir PATH para Maven
+     lineinfile:
+      path: /home/dspace/.bashrc
+      line: 'export PATH=/opt/maven/apache-maven-3.9.11/bin:$PATH'
+      state: present
+
+   - name: Garantir ownership correto no source
+     file:
+        path: /dspace
+        owner: "{{ dspace_user }}"
+        group: "{{ dspace_group }}"
+        recurse: yes
+
+   - name: Rodar 'mvn package' no source do DSpace
+     command: mvn package
+     args:
+        chdir: /dspace
+     become_user: "{{ dspace_user }}"
+     environment:
+      PATH: "/opt/maven/apache-maven-3.9.11/bin:{{ ansible_env.PATH }}"
+
+   - name: Criar diretório de instalação do DSpace
+     file:
+        path: /dspace-installation
+        state: directory
+        owner: "{{ dspace_user }}"
+        group: "{{ dspace_group }}"
+        mode: '0755'
+
+   - name: Rodar 'ant fresh_install' no source do DSpace
+     command: ant fresh_install
+     args:
+        chdir: /dspace/dspace/target/dspace-installer
+     become_user: "{{ dspace_user }}"
+     environment:
+      PATH: "/opt/ant/apache-ant-1.10.15/bin:{{ ansible_env.PATH }}"
