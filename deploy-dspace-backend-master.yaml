@@ -1,6 +1,6 @@
 - import_playbook: install-java.yaml
 - import_playbook: install-maven.yaml
-- import_playbook: install-apache-ant.yaml
+- import_playbook: install-apache-ant-apt.yaml
 - import_playbook: install-postgresql.yaml
 - import_playbook: configuring-postgresql.yaml
 - import_playbook: install-solr.yaml

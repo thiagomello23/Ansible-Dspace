@@ -128,8 +128,6 @@
      args:
         chdir: /dspace/dspace/target/dspace-installer
      become_user: "{{ dspace_user }}"
-     environment:
-      PATH: "/opt/ant/apache-ant-1.10.15/bin:{{ ansible_env.PATH }}"
 
    - name: Rodando migration no DSpace instalado
      command: /dspace-installation/bin/dspace database migrate
@@ -151,3 +149,9 @@
         name: solr
         state: restarted
         enabled: yes
+
+   - name: Executar index-discovery
+     command: ./dspace index-discovery
+     args:
+        chdir: /dspace-installation/bin
+     become_user: dspace

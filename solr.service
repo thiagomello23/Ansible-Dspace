@@ -11,7 +11,7 @@ ExecStop=/opt/solr/bin/solr stop
 ExecReload=/opt/solr/bin/solr restart
 Restart=on-failure
 LimitNOFILE=65535
-Environment="SOLR_OPTS=-Dsolr.config.lib.enabled=true"
+# Environment="SOLR_OPTS=-Dsolr.config.lib.enabled=true"
 
 [Install]
 WantedBy=multi-user.target

@@ -2,14 +2,14 @@
   hosts: all
   become: yes
   vars:
-    solr_version: "9.9.0"  # Ajuste para a versão desejada (anterior a 9.8 para evitar configuração adicional)
+    solr_version: "9.7.0"  # Ajuste para a versão desejada (anterior a 9.8 para evitar configuração adicional)
     solr_user: "solr"
     solr_group: "solr"
     solr_home: "/opt/solr"
     solr_data_dir: "/var/solr"
     solr_port: 8983
     java_home: "/usr/lib/jvm/java-17-openjdk-amd64"  # Ajuste conforme sua instalação Java
-    local_solr_path: "/home/fasipe/ansible-for-dspace/solr-9.9.0-slim.tgz" 
+    local_solr_path: "/home/fasipe/ansible-for-dspace/solr-9.7.0-slim.tgz" 
 
   tasks:
     - name: Create solr group
@@ -39,13 +39,10 @@
         - "{{ solr_data_dir }}/data"
         - "{{ solr_data_dir }}/logs"
 
-    - name: Transfer Solr archive to remote server
-      copy:
+    - name: Transferir Solr via rsync
+      synchronize:
         src: "{{ local_solr_path }}"
         dest: "/tmp/solr-{{ solr_version }}-slim.tgz"
-        mode: '0644'
-        backup: yes
-      register: transfer_result
 
     - name: Extract Solr
       unarchive:
@@ -58,6 +55,28 @@
       shell: |
         cp -r /tmp/solr-{{ solr_version }}-slim/* {{ solr_home }}/
         chown -R {{ solr_user }}:{{ solr_group }} {{ solr_home }}
+
+    - name: Baixar lucene-analysis-icu
+      get_url:
+        url: "https://repo1.maven.org/maven2/org/apache/lucene/lucene-analysis-icu/9.9.0/lucene-analysis-icu-9.9.0.jar"
+        dest: /opt/solr/server/solr-webapp/webapp/WEB-INF/lib/lucene-analysis-icu-9.9.0.jar
+        mode: '0644'
+
+    - name: Baixar icu4j
+      get_url:
+        url: "https://repo1.maven.org/maven2/com/ibm/icu/icu4j/72.1/icu4j-72.1.jar"
+        dest: /opt/solr/server/solr-webapp/webapp/WEB-INF/lib/icu4j-72.1.jar
+        mode: '0644'
+
+    - name: Ajustar permissões das libs
+      file:
+        path: "{{ item }}"
+        owner: solr
+        group: solr
+      loop:
+        - /opt/solr/server/solr-webapp/webapp/WEB-INF/lib/lucene-analysis-icu-9.9.0.jar
+        - /opt/solr/server/solr-webapp/webapp/WEB-INF/lib/icu4j-72.1.jar
+
 
     - name: Clean up downloaded files
       file:
