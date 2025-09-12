@@ -7,3 +7,5 @@
 - import_playbook: config-solr.yaml
 - import_playbook: install-dspace.yaml
 - import_playbook: run-dspace.yaml
+- import_playbook: dspace-front-dependencies.yaml
+- import_playbook: install-dspace-front.yaml
