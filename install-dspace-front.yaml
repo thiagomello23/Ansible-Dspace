@@ -43,9 +43,9 @@
        chdir: "{{ dspace_home }}"
 
    - name: Transferindo arquivo de config DSpace Front
-     copy:
-       src: "./config.prod.yaml"
-       dest: "/dspace-front/config"
+     template:
+       src: "./config.prod.yaml.j2"
+       dest: "/dspace-front/config/config.prod.yaml"
        mode: '0644'
 
    - name: Run npm build

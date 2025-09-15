@@ -86,13 +86,13 @@
         db: dspace
         state: present
 
-   - name: Enviar local.cfg do DSpace
-     copy:
-        src: ./local.cfg           # caminho no seu Ansible control node
-        dest: /dspace/dspace/config/local.cfg  # caminho no servidor
-        owner: dspace
-        group: dspace
-        mode: "0644"
+   - name: Enviar local.cfg do DSpace com template
+     template:
+       src: ./local.cfg.j2   # caminho do template no Ansible control node
+       dest: /dspace/dspace/config/local.cfg  # caminho no servidor
+       owner: dspace
+       group: dspace
+       mode: "0644"
 
    - name: Definir PATH para Maven
      lineinfile:
