@@ -1,0 +1,11 @@
+- name: Instalar DSpace FrontEnd
+  hosts: all
+  become: yes
+  vars:
+      dspace_home: "/dspace-front"
+
+  tasks:
+    - name: Run DSpace
+      command: node ./dist/server/main.js
+      args:
+       chdir: "{{ dspace_home }}"

@@ -42,7 +42,15 @@
      args:
        chdir: "{{ dspace_home }}"
 
+   - name: Transferindo arquivo de config DSpace Front
+     copy:
+       src: "./config.prod.yaml"
+       dest: "/dspace-front/config"
+       mode: '0644'
+
    - name: Run npm build
      command: npm run build:prod
      args:
        chdir: "{{ dspace_home }}"
+     environment:
+        NODE_OPTIONS: "--max-old-space-size=4096"
