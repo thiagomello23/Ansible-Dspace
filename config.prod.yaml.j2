@@ -12,6 +12,6 @@ ui:
 # with the value of "dspace.server.url" in the backend's local.cfg
 rest:
   ssl: false
-  host: {{ DSPACE_SERVER_IP }}
+  host: {{ lookup('env', 'DSPACE_SERVER_IP') }}
   port: 8080
   nameSpace: /server
