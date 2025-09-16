@@ -1,0 +1,17 @@
+- name: Instalar Nginx
+  hosts: all
+  become: yes
+  vars:
+    
+  tasks:
+    - name: Instalando nginx
+      apt:
+        name: nginx
+        state: latest
+        update_cache: yes
+
+    - name: Enviando arquivo de configuração do nginx
+      template:
+        src: ./dspace-nginx.j2   # caminho do template no Ansible control node
+        dest: /etc/nginx/sites-available/dspace-nginx  # caminho no servidor
+        mode: "0644"
