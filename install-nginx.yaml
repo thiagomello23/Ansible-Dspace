@@ -15,3 +15,10 @@
         src: ./dspace-nginx.j2   # caminho do template no Ansible control node
         dest: /etc/nginx/sites-available/dspace-nginx  # caminho no servidor
         mode: "0644"
+
+    - name: Linkando arquivo
+      command: ln -s /etc/nginx/sites-available/dspace-nginx /etc/nginx/sites-enabled/
+      ignore_errors: yes
+
+    - name: Reiniciando Nginx
+      command: systemctl reload nginx

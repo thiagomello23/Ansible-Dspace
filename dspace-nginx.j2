@@ -1,6 +1,6 @@
 server {
     listen 80;
-    server_name api.exemplo.com;
+    server_name {{ lookup('env', 'DSPACE_SERVER_DOMAIN') }};
 
     # Security Headers
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;

@@ -3,7 +3,7 @@
 # This is a common setup for when you want to use Apache or Nginx to handle HTTPS and proxy requests to Node on port 4000
 ui:
   ssl: false
-  host: 0.0.0.0
+  host: localhost
   port: 4000
   nameSpace: /
  
@@ -11,7 +11,7 @@ ui:
 # The REST settings MUST correspond to the primary/public URL of the backend. Usually, this means they must be kept in sync
 # with the value of "dspace.server.url" in the backend's local.cfg
 rest:
-  ssl: false
-  host: {{ lookup('env', 'DSPACE_SERVER_IP') }}
-  port: 8080
+  ssl: true
+  host: {{ lookup('env', 'DSPACE_SERVER_DOMAIN') }}
+  port: 443
   nameSpace: /server
