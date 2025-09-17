@@ -18,8 +18,8 @@
     - name: Gerar Certificado
       command: >
         certbot --nginx
-        -d {{ lookup('env', 'DSPACE_SERVER_DOMAIN') }}
+        -d {{ DSPACE_SERVER_DOMAIN }}
         --non-interactive
         --agree-tos
         --redirect
-        -m admin@{{ lookup('env', 'DSPACE_SERVER_DOMAIN') }}
+        -m admin@{{ DSPACE_SERVER_DOMAIN }}
