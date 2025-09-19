@@ -9,7 +9,7 @@
     solr_data_dir: "/var/solr"
     solr_port: 8983
     java_home: "/usr/lib/jvm/java-17-openjdk-amd64"  # Ajuste conforme sua instalação Java
-    local_solr_path: "/home/fasipe/ansible-for-dspace/solr-9.7.0-slim.tgz" 
+    local_solr_path: "/home/fasipe/ansible-for-dspace/artifacts/solr-9.7.0-slim.tgz" 
 
   tasks:
     - name: Create solr group

@@ -2,7 +2,7 @@
   hosts: dspace_prod
   become: yes
   vars:
-    local_dspace_path: "/home/fasipe/ansible-for-dspace/DSpace-dspace-9.1.tar.gz"
+    local_dspace_path: "/home/fasipe/ansible-for-dspace/artifacts/DSpace-dspace-9.1.tar.gz"
     dspace_user: dspace
     dspace_group: dspace
     db_name: dspace

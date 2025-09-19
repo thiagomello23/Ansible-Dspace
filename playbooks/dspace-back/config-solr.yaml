@@ -8,7 +8,7 @@
   tasks:
    - name: Enviar solr.service para o destino
      copy:
-       src: ./solr.service
+       src: /home/fasipe/ansible-for-dspace/daemons/solr.service
        dest: /etc/systemd/system/solr.service
 
    - name: Reiniciando o systemcd
