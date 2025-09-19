@@ -1,5 +1,5 @@
 - name: Instalar Nginx
-  hosts: all
+  hosts: dspace_prod
   become: yes
   vars:
     

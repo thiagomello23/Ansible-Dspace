@@ -1,5 +1,5 @@
 - name: Rodando certificação SSL
-  hosts: all
+  hosts: dspace_prod
   become: yes
   vars:
     nginx_folder: /etc/nginx

@@ -1,6 +1,6 @@
 ---
 - name: Instalar Maven mais recente
-  hosts: aws-host
+  hosts: dspace_prod
   become: yes
   vars:
     maven_version: "3.9.11"   # última versão estável (set/2025)

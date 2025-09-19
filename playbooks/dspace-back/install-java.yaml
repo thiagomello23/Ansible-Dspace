@@ -1,5 +1,5 @@
 - name: Instalar Java 17 no servidor
-  hosts: aws-host
+  hosts: dspace_prod
   become: yes  # executa com sudo
   tasks:
     - name: Atualizar cache do apt

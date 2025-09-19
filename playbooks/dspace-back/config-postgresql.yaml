@@ -1,5 +1,5 @@
 - name: Configurar PostgreSQL para DSpace
-  hosts: all
+  hosts: dspace_prod
   become: yes
   vars:
     postgresql_conf_path: "/etc/postgresql/16/main/postgresql.conf"  # ajuste para sua versão

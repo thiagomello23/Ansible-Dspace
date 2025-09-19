@@ -1,5 +1,5 @@
 - name: Instalando DSpace
-  hosts: all
+  hosts: dspace_prod
   become: yes
   vars:
     local_dspace_path: "/home/fasipe/ansible-for-dspace/DSpace-dspace-9.1.tar.gz"

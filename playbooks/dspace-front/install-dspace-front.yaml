@@ -1,5 +1,5 @@
 - name: Instalar DSpace FrontEnd
-  hosts: all
+  hosts: dspace_prod
   become: yes
   vars:
     local_frontend_file: "/home/fasipe/ansible-for-dspace/dspace-angular-dspace-9.1.tar.gz"   # caminho local do arquivo

@@ -1,5 +1,5 @@
 - name: Instalando DSpace
-  hosts: all
+  hosts: dspace_prod
   become: yes
   vars:
 

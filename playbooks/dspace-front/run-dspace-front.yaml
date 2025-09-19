@@ -1,5 +1,5 @@
 - name: Instalar DSpace FrontEnd
-  hosts: all
+  hosts: dspace_prod
   become: yes
   gather_facts: false
   vars:

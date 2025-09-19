@@ -1,5 +1,5 @@
 - name: Instalar Certbot e configurar
-  hosts: all
+  hosts: dspace_prod
   become: yes
   vars:
 

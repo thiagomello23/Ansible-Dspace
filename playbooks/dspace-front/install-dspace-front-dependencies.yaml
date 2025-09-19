@@ -1,5 +1,5 @@
 - name: Instalar Node.js 20 e PM2
-  hosts: all
+  hosts: dspace_prod
   become: yes
   vars:
     user_name: ubuntu   # <<< Troque pelo usuário desejado

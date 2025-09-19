@@ -1,5 +1,5 @@
 - name:  Config and Run Solr
-  hosts: aws-host
+  hosts: dspace_prod
   become: yes
   vars:
     solr_user: "solr"
