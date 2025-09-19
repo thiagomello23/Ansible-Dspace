@@ -1,0 +1,21 @@
+- name:  Config and Run Solr
+  hosts: aws-host
+  become: yes
+  vars:
+    solr_user: "solr"
+    solr_group: "solr"
+
+  tasks:
+   - name: Enviar solr.service para o destino
+     copy:
+       src: ./solr.service
+       dest: /etc/systemd/system/solr.service
+
+   - name: Reiniciando o systemcd
+     command: systemctl daemon-reexec
+
+   - name: Inicializando solr
+     systemd:
+       name: solr
+       enabled: yes
+       state: started

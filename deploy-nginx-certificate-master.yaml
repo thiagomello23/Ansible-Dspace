@@ -1,3 +1,0 @@
-- import_playbook: install-nginx.yaml
-- import_playbook: install-certbot.yaml
-- import_playbook: run-certifications.yaml

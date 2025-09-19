@@ -1,0 +1,6 @@
+dspace_prod:
+  hosts:
+    dspace_host_01:
+      ansible_host: 72.60.136.219
+    dspace_host_02:
+      ansible_host: 72.60.136.221

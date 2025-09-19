@@ -1,0 +1,48 @@
+---
+- name: Instalar Maven mais recente
+  hosts: aws-host
+  become: yes
+  vars:
+    maven_version: "3.9.11"   # última versão estável (set/2025)
+    maven_install_dir: "/opt/maven"
+
+  tasks:
+    - name: Instalar dependências necessárias
+      apt:
+        name:
+          - wget
+          - tar
+        state: present
+        update_cache: yes
+
+    - name: Baixar Maven
+      get_url:
+        url: "https://dlcdn.apache.org/maven/maven-3/3.9.11/binaries/apache-maven-3.9.11-bin.tar.gz"
+        dest: "/tmp/apache-maven-{{ maven_version }}-bin.tar.gz"
+
+    - name: Criar diretório de instalação do Maven
+      file:
+        path: "{{ maven_install_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Extrair Maven
+      unarchive:
+        src: "/tmp/apache-maven-{{ maven_version }}-bin.tar.gz"
+        dest: "{{ maven_install_dir }}"
+        remote_src: yes
+        creates: "{{ maven_install_dir }}/apache-maven-{{ maven_version }}"
+
+    - name: Configurar variáveis de ambiente do Maven
+      copy:
+        dest: /etc/profile.d/maven.sh
+        content: |
+          export M2_HOME={{ maven_install_dir }}/apache-maven-{{ maven_version }}
+          export PATH=$M2_HOME/bin:$PATH
+        mode: '0755'
+
+    - name: Tornar configuração disponível
+      shell: source /etc/profile.d/maven.sh
+      args:
+        executable: /bin/bash
+
