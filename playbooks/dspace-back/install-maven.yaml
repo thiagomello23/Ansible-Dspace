@@ -15,9 +15,14 @@
         state: present
         update_cache: yes
 
-    - name: Baixar Maven
-      get_url:
-        url: "https://dlcdn.apache.org/maven/maven-3/3.9.11/binaries/apache-maven-3.9.11-bin.tar.gz"
+    #- name: Baixar Maven
+      #get_url:
+        #url: "https://dlcdn.apache.org/maven/maven-3/3.9.11/binaries/apache-maven-3.9.11-bin.tar.gz"
+        #dest: "/tmp/apache-maven-{{ maven_version }}-bin.tar.gz"
+
+    - name: Enviando artifact do Maven
+      synchronize:
+        src: "{{ home }}/artifacts/apache-maven-3.9.11-bin.tar.gz"
         dest: "/tmp/apache-maven-{{ maven_version }}-bin.tar.gz"
 
     - name: Criar diretório de instalação do Maven

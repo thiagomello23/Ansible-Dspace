@@ -1,6 +1,6 @@
 - import_playbook: dspace-back/install-java.yaml
 - import_playbook: dspace-back/install-maven.yaml
-- import_playbook: dspace-back/install-apache-ant-apt.yaml
+- import_playbook: dspace-back/install-apache-ant.yaml
 - import_playbook: dspace-back/install-postgresql.yaml
 - import_playbook: dspace-back/config-postgresql.yaml
 - import_playbook: dspace-back/install-solr.yaml

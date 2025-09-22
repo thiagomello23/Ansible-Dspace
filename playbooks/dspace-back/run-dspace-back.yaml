@@ -7,7 +7,7 @@
 
     - name: Copiar dspace.service para o destino
       copy:
-        src: ./dspace.service
+        src: "{{home}}/artifacts/dspace.service"
         dest: /etc/systemd/system/dspace.service
         owner: ubuntu
         group: ubuntu

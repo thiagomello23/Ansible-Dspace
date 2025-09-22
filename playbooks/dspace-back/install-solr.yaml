@@ -56,27 +56,25 @@
         cp -r /tmp/solr-{{ solr_version }}-slim/* {{ solr_home }}/
         chown -R {{ solr_user }}:{{ solr_group }} {{ solr_home }}
 
-     - name: Enviar Lucene-analysis-icu
-       synchronize:
-         src: /home/fasipe/ansible-for-dspace/artifacts/lucene-analysis-icu-9.9.0.jar
+    - name: Enviar Lucene-analysis-icu
+      synchronize:
+         src: "{{ home }}/artifacts/lucene-analysis-icu-9.9.0.jar"
          dest: /opt/solr/server/solr-webapp/webapp/WEB-INF/lib/lucene-analysis-icu-9.9.0.jar
-         mode: '0644'
 
-     - name: Enviar icu4J
-       synchronize:
-         src: /home/fasipe/ansible-for-dspace/artifacts/icu4j-72.1.jar
+    - name: Enviar icu4J
+      synchronize:
+         src: "{{ home }}/artifacts/icu4j-72.1.jar"
          dest: /opt/solr/server/solr-webapp/webapp/WEB-INF/lib/icu4j-72.1.jar
-         mode: '0644'
 
-     - name: Definir permissão do Lucene-analysis-icu
-       file:
+    - name: Definir permissão do Lucene-analysis-icu
+      file:
          path: /opt/solr/server/solr-webapp/webapp/WEB-INF/lib/lucene-analysis-icu-9.9.0.jar
          owner: root
          group: root
          mode: '0644'
 
-     - name: Definir permissão do icu4J
-       file:
+    - name: Definir permissão do icu4J
+      file:
          path: /opt/solr/server/solr-webapp/webapp/WEB-INF/lib/icu4j-72.1.jar
          owner: root
          group: root
@@ -100,13 +98,13 @@
         - "/tmp/solr-{{ solr_version }}.tgz"
         - "/tmp/solr-{{ solr_version }}"
 
-    handlers:
-      - name: reload systemd
-        systemd:
-          daemon_reload: yes
+   # handlers:
+    #  - name: reload systemd
+     #   systemd:
+      #    daemon_reload: yes
 
-    - name: restart solr
-      systemd:
-        name: solr
-        state: restarted
-        enabled: yes
+   # - name: restart solr
+    #  systemd:
+     #   name: solr
+      #  state: restarted
+       # enabled: yes

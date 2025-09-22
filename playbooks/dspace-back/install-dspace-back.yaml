@@ -2,7 +2,7 @@
   hosts: dspace_prod
   become: yes
   vars:
-    local_dspace_path: "/home/fasipe/ansible-for-dspace/artifacts/DSpace-dspace-9.1.tar.gz"
+    local_dspace_path: "{{ home }}/artifacts/DSpace-dspace-9.1.tar.gz"
     dspace_user: dspace
     dspace_group: dspace
     db_name: dspace
@@ -88,7 +88,7 @@
 
    - name: Enviar local.cfg do DSpace com template
      template:
-       src: ./local.cfg.j2   # caminho do template no Ansible control node
+       src: "{{ home }}/templates/local.cfg.j2"   # caminho do template no Ansible control node
        dest: /dspace/dspace/config/local.cfg  # caminho no servidor
        owner: dspace
        group: dspace
