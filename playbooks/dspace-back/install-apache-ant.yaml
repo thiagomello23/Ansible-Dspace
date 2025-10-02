@@ -1,5 +1,5 @@
 - name: Instalar Apache Ant via apt
-  hosts: dspace_prod
+  hosts: all
   become: yes
 
   tasks:

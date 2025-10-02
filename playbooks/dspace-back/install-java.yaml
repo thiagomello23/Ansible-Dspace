@@ -1,6 +1,6 @@
 - name: Instalar Java 17 no servidor
-  hosts: dspace_prod
-  become: yes  # executa com sudo
+  hosts: all
+  become: yes
   tasks:
     - name: Atualizar cache do apt
       apt:

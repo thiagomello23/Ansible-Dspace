@@ -2,8 +2,8 @@
   hosts: dspace_prod
   become: yes
   vars:
-    postgresql_conf_path: "/etc/postgresql/16/main/postgresql.conf"  # ajuste para sua versão
-    pg_hba_conf_path: "/etc/postgresql/16/main/pg_hba.conf"          # ajuste para sua versão
+    postgresql_conf_path: "/etc/postgresql/16/main/postgresql.conf"
+    pg_hba_conf_path: "/etc/postgresql/16/main/pg_hba.conf"
     dspace_db_user: "dspace"
     dspace_db_name: "dspace"
 
@@ -14,7 +14,7 @@
         regexp: '^#?listen_addresses\s*='
         line: "listen_addresses = '*'"
         state: present
-        backup: yes  # faz backup do arquivo original
+        backup: yes
 
     - name: Adicionar regra para DSpace no pg_hba.conf
       lineinfile:

@@ -1,4 +1,4 @@
-- name:  Config and Run Solr
+- name:  Configura e roda o Solr usando daemons
   hosts: dspace_prod
   become: yes
   vars:
@@ -6,7 +6,7 @@
     solr_group: "solr"
 
   tasks:
-   - name: Enviar solr.service para o destino
+   - name: Enviando solr.service para o destino
      copy:
        src: "{{ home }}/daemons/solr.service"
        dest: /etc/systemd/system/solr.service

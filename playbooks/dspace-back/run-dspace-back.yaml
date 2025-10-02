@@ -1,11 +1,11 @@
-- name: Instalando DSpace
+- name: Rodando DSpace
   hosts: dspace_prod
   become: yes
   vars:
 
   tasks:
 
-    - name: Copiar dspace.service para o destino
+    - name: Copia dspace.service para o destino
       copy:
         src: "{{home}}/artifacts/dspace.service"
         dest: /etc/systemd/system/dspace.service
@@ -13,11 +13,11 @@
         group: ubuntu
         mode: '0644'
 
-    - name: Recarregar systemd
+    - name: Recarrega o systemd
       systemd:
         daemon_reload: yes
 
-    - name: Habilitar e iniciar o DSpace
+    - name: Habilita e inicia o DSpace
       systemd:
         name: dspace
         enabled: yes

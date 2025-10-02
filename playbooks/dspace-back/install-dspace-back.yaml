@@ -11,12 +11,12 @@
 
   tasks:
 
-   - name: Create DSpace group
+   - name: Criando grupo DSpace
      group:
         name: "{{ dspace_group }}"
         state: present
 
-   - name: Create DSpace user
+   - name: Criando usuário DSpace
      user:
         name: "{{ dspace_user }}"
         group: "{{ dspace_group }}"
@@ -24,7 +24,7 @@
         shell: /bin/bash
         createhome: yes
 
-   - name: Create DSpace Directories
+   - name: Criando diretórios do DSpace
      file:
         path: "{{ item }}"
         state: directory
@@ -35,7 +35,7 @@
      loop: 
         - /dspace
 
-   - name: Transfer DSpace archive to remote server
+   - name: Transferindo artefato do DSpace para o servidor
      copy:
        src: "{{ local_dspace_path }}"
        dest: "/tmp/DSpace-dspace-9.1.tar.gz"
@@ -43,18 +43,18 @@
        backup: yes
      register: transfer_result
 
-   - name: Extract DSpace
+   - name: Extraindo DSpace
      unarchive:
         src: "/tmp/DSpace-dspace-9.1.tar.gz"
         dest: /tmp
         remote_src: yes
         creates: "/tmp/DSpace-dspace-9.1"
 
-   - name: Copy DSpace files to installation directory
+   - name: Enviando arquivos do DSpace para o diretório de build
      shell: |
         cp -r /tmp/DSpace-dspace-9.1/* /dspace/
 
-   - name: Instalar dependências do Ansible para PostgreSQL
+   - name: Instalando dependências do Ansible para PostgreSQL
      apt:
         name: 
           - python3-psycopg2
@@ -62,7 +62,7 @@
         state: present
      become: yes
 
-   - name: Criar usuário do PostgreSQL
+   - name: Criando usuário do PostgreSQL
      community.postgresql.postgresql_user:
         name: "{{ db_user }}"
         password: "{{ db_password }}"
@@ -70,7 +70,7 @@
      become: yes
      become_user: postgres   # 👈 roda como o usuário postgres do sistema
 
-   - name: Criar banco de dados
+   - name: Criando banco de dados
      community.postgresql.postgresql_db:
         name: "{{ db_name }}"
         owner: "{{ db_user }}"
@@ -78,7 +78,7 @@
      become: yes
      become_user: postgres   # 👈 idem
 
-   - name: Habilitar extensão pgcrypto no PostgreSQL
+   - name: Habilita extensão pgcrypto no PostgreSQL
      become: yes
      become_user: postgres
      postgresql_ext:
@@ -86,7 +86,7 @@
         db: dspace
         state: present
 
-   - name: Enviar local.cfg do DSpace com template
+   - name: Envia local.cfg do DSpace com template
      template:
        src: "{{ home }}/templates/local.cfg.j2"   # caminho do template no Ansible control node
        dest: /dspace/dspace/config/local.cfg  # caminho no servidor
@@ -94,20 +94,20 @@
        group: dspace
        mode: "0644"
 
-   - name: Definir PATH para Maven
+   - name: Define PATH para Maven
      lineinfile:
       path: /home/dspace/.bashrc
       line: 'export PATH=/opt/maven/apache-maven-3.9.11/bin:$PATH'
       state: present
 
-   - name: Garantir ownership correto no source
+   - name: Garante ownership correto no source
      file:
         path: /dspace
         owner: "{{ dspace_user }}"
         group: "{{ dspace_group }}"
         recurse: yes
 
-   - name: Rodar 'mvn package' no source do DSpace
+   - name: Roda 'mvn package' no source do DSpace
      command: mvn package
      args:
         chdir: /dspace
@@ -115,7 +115,7 @@
      environment:
       PATH: "/opt/maven/apache-maven-3.9.11/bin:{{ ansible_env.PATH }}"
 
-   - name: Criar diretório de instalação do DSpace
+   - name: Criando diretório de instalação do DSpace
      file:
         path: /dspace-installation
         state: directory
@@ -123,7 +123,7 @@
         group: "{{ dspace_group }}"
         mode: '0755'
 
-   - name: Rodar 'ant fresh_install' no source do DSpace
+   - name: Rodando 'ant fresh_install' no source do DSpace
      command: ant fresh_install
      args:
         chdir: /dspace/dspace/target/dspace-installer
@@ -134,10 +134,10 @@
      become: true
      become_user: dspace
 
-   - name: Copiar configsets do DSpace para o Solr
+   - name: Copia configsets do DSpace para o Solr
      command: cp -R /dspace-installation/solr/. /opt/solr/server/solr/configsets/
 
-   - name: Ajustar permissões dos configsets do Solr
+   - name: Ajuste de permissões dos configsets do Solr
      file:
         path: /opt/solr/server/solr/configsets/
         owner: solr
@@ -150,7 +150,7 @@
         state: restarted
         enabled: yes
 
-   - name: Executar index-discovery
+   - name: Executando index-discovery
      command: ./dspace index-discovery
      args:
         chdir: /dspace-installation/bin
