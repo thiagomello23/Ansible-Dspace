@@ -2,7 +2,7 @@
   hosts: all
   become: yes
   vars:
-    local_dspace_path: "{{ home }}/artifacts/DSpace-dspace-9.1.tar.gz"
+    local_dspace_path: "{{ home }}/daemons/DSpace-dspace-9.1.tar.gz"
     dspace_user: dspace
     dspace_group: dspace
     db_name: dspace
