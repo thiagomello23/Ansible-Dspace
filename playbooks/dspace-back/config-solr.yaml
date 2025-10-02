@@ -1,5 +1,5 @@
 - name:  Configura e roda o Solr usando daemons
-  hosts: dspace_prod
+  hosts: all
   become: yes
   vars:
     solr_user: "solr"

@@ -1,5 +1,5 @@
-- name: Configurar PostgreSQL para DSpace
-  hosts: dspace_prod
+- name: Configurando PostgreSQL para DSpace
+  hosts: all
   become: yes
   vars:
     postgresql_conf_path: "/etc/postgresql/16/main/postgresql.conf"
@@ -8,7 +8,7 @@
     dspace_db_name: "dspace"
 
   tasks:
-    - name: Habilitar conexões TCP/IP no postgresql.conf
+    - name: Habilitando conexões TCP/IP no postgresql.conf
       lineinfile:
         path: "{{ postgresql_conf_path }}"
         regexp: '^#?listen_addresses\s*='
@@ -16,7 +16,7 @@
         state: present
         backup: yes
 
-    - name: Adicionar regra para DSpace no pg_hba.conf
+    - name: Adicionando regra para DSpace no pg_hba.conf
       lineinfile:
         path: "{{ pg_hba_conf_path }}"
         insertafter: BOF  # insere no início do arquivo
@@ -24,7 +24,7 @@
         state: present
         backup: yes
 
-    - name: Reiniciar PostgreSQL para aplicar mudanças
+    - name: Reiniciando PostgreSQL para aplicar mudanças
       service:
         name: postgresql
         state: restarted

@@ -1,12 +1,12 @@
-- name: Instalar Maven mais recente
+- name: Instalando Maven mais recente
   hosts: all
   become: yes
   vars:
-    maven_version: "3.9.11"   # última versão estável (set/2025)
+    maven_version: "3.9.11"
     maven_install_dir: "/opt/maven"
 
   tasks:
-    - name: Instalar dependências necessárias
+    - name: Instalando dependências necessárias
       apt:
         name:
           - wget
@@ -19,20 +19,20 @@
         src: "{{ home }}/artifacts/apache-maven-{{ maven_version }}-bin.tar.gz"
         dest: "/tmp/apache-maven-{{ maven_version }}-bin.tar.gz"
 
-    - name: Criar diretório de instalação do Maven
+    - name: Criando diretório de instalação do Maven
       file:
         path: "{{ maven_install_dir }}"
         state: directory
         mode: '0755'
 
-    - name: Extrair Maven
+    - name: Extraindo Maven
       unarchive:
         src: "/tmp/apache-maven-{{ maven_version }}-bin.tar.gz"
         dest: "{{ maven_install_dir }}"
         remote_src: yes
         creates: "{{ maven_install_dir }}/apache-maven-{{ maven_version }}"
 
-    - name: Configurar variáveis de ambiente do Maven
+    - name: Configurando variáveis de ambiente do Maven
       copy:
         dest: /etc/profile.d/maven.sh
         content: |

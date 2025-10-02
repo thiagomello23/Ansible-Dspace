@@ -1,4 +1,4 @@
-- name: Instalar Nginx
+- name: Instalando Nginx
   hosts: dspace_prod
   become: yes
   vars:
@@ -12,7 +12,7 @@
 
     - name: Enviando arquivo de configuração do nginx
       template:
-        src: ./dspace-nginx.j2   # caminho do template no Ansible control node
+        src: "{{ home }}/templates/dspace-nginx.j2"   # caminho do template no Ansible control node
         dest: /etc/nginx/sites-available/dspace-nginx  # caminho no servidor
         mode: "0644"
 

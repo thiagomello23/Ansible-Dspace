@@ -1,15 +1,15 @@
-- name: Instalar PostgreSQL no servidor
-  hosts: dspace_prod
+- name: Instalando PostgreSQL no servidor
+  hosts: all
   become: yes
   vars:
     postgresql_version: "16"
   tasks:
-    - name: Atualizar cache de pacotes
+    - name: Atualizando cache de pacotes
       apt:
         update_cache: yes
         cache_valid_time: 3600
 
-    - name: Instalar dependências para adicionar repositório
+    - name: Instalando dependências para adicionar repositório
       apt:
         name: 
           - gnupg
@@ -17,12 +17,12 @@
           - ca-certificates
         state: present
 
-    - name: Instalar PostgreSQL
+    - name: Instalando PostgreSQL
       apt:
         name: postgresql
         state: present
 
-    - name: Instalar Pacotes comuns PostgreSQL
+    - name: Instalando Pacotes comuns PostgreSQL
       apt:
         name: postgresql-common
         state: present

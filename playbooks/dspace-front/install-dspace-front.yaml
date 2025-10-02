@@ -1,21 +1,21 @@
-- name: Instalar DSpace FrontEnd
-  hosts: dspace_prod
+- name: Instalando DSpace FrontEnd
+  hosts: all
   become: yes
   vars:
-    local_frontend_file: "{{home}}/artifacts/dspace-angular-dspace-9.1.tar.gz"   # caminho local do arquivo
-    remote_tmp_path: "/tmp/dspace-angular-dspace-9.1.tar.gz"              # destino temporário
-    install_dir: "/opt/dspace/frontend"                      # diretório final
+    local_frontend_file: "{{home}}/artifacts/dspace-angular-dspace-9.1.tar.gz"
+    remote_tmp_path: "/tmp/dspace-angular-dspace-9.1.tar.gz"
+    install_dir: "/opt/dspace/frontend"
     dspace_user: "dspace"
     dspace_group: "dspace"
     dspace_home: "/dspace-front"
 
   tasks:
-   - name: Transferir instalador do frontend com rsync
+   - name: Transferindo instalador do frontend com rsync
      synchronize:
        src: "{{ local_frontend_file }}"
        dest: "{{ remote_tmp_path }}"
 
-   - name: Create DSpace directories
+   - name: Criando diretórios DSpace front
      file:
         path: "{{ item }}"
         state: directory
@@ -25,19 +25,19 @@
      loop:
         - "{{ dspace_home }}"
 
-   - name: Extract DSpace Front
+   - name: Extraindo DSpace front
      unarchive:
        src: "/tmp/dspace-angular-dspace-9.1.tar.gz"
        dest: /tmp
        remote_src: yes
        creates: "/tmp/dspace-angular-dspace-9.1"
 
-   - name: Copy DSpace files to installation directory
+   - name: Copia os arquivos de build do DSpace Front para o diretório de instalação
      shell: |
         cp -r /tmp/dspace-angular-dspace-9.1/* {{ dspace_home }}/
         chown -R {{ dspace_user }}:{{ dspace_group }} {{ dspace_home }}
 
-   - name: Run npm install
+   - name: Instalando dependencias
      command: npm install
      args:
        chdir: "{{ dspace_home }}"
@@ -48,7 +48,7 @@
        dest: "/dspace-front/config/config.prod.yaml"
        mode: '0644'
 
-   - name: Run npm build
+   - name: Buildando o projeto
      command: npm run build:prod
      args:
        chdir: "{{ dspace_home }}"

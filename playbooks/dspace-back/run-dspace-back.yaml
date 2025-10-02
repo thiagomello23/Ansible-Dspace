@@ -1,4 +1,4 @@
-- name: Rodando DSpace
+- name: Rodando DSpace Back
   hosts: dspace_prod
   become: yes
   vars:

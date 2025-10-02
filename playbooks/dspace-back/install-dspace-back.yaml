@@ -1,5 +1,5 @@
-- name: Instalando DSpace
-  hosts: dspace_prod
+- name: Instalando DSpace Back
+  hosts: all
   become: yes
   vars:
     local_dspace_path: "{{ home }}/artifacts/DSpace-dspace-9.1.tar.gz"

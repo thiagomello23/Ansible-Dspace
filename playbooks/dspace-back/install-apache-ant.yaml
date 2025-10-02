@@ -1,9 +1,9 @@
-- name: Instalar Apache Ant via apt
+- name: Instalando Apache Ant via apt
   hosts: all
   become: yes
 
   tasks:
-    - name: Atualizar cache do apt e instalar Ant
+    - name: Atualizando cache do apt e instalar Ant
       apt:
         name: ant
         state: present
