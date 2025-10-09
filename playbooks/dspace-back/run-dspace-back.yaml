@@ -1,0 +1,24 @@
+- name: Rodando DSpace Back
+  hosts: dspace_prod
+  become: yes
+  vars:
+
+  tasks:
+
+    - name: Copia dspace.service para o destino
+      copy:
+        src: "{{home}}/daemons/dspace.service"
+        dest: /etc/systemd/system/dspace.service
+        owner: ubuntu
+        group: ubuntu
+        mode: '0644'
+
+    - name: Recarrega o systemd
+      systemd:
+        daemon_reload: yes
+
+    - name: Habilita e inicia o DSpace
+      systemd:
+        name: dspace
+        enabled: yes
+        state: started

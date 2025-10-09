@@ -1,0 +1,3 @@
+- import_playbook: dspace-front/install-dspace-front-dependencies.yaml
+- import_playbook: dspace-front/install-dspace-front.yaml
+- import_playbook: dspace-front/run-dspace-front.yaml

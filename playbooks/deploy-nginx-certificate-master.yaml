@@ -1,0 +1,3 @@
+- import_playbook: dspace-certificate/install-nginx.yaml
+- import_playbook: dspace-certificate/install-certbot.yaml
+- import_playbook: dspace-certificate/run-certifications.yaml

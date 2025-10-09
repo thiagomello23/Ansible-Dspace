@@ -1,0 +1,99 @@
+- name: Instalando Apache Solr
+  hosts: all
+  become: yes
+  vars:
+    solr_version: "9.7.0"
+    solr_user: "solr"
+    solr_group: "solr"
+    solr_home: "/opt/solr"
+    solr_data_dir: "/var/solr"
+    solr_port: 8983
+    java_home: "/usr/lib/jvm/java-17-openjdk-amd64"  # Ajuste conforme sua instalação Java
+    local_solr_path: "{{ home }}/artifacts/solr-9.7.0-slim.tgz"
+
+  tasks:
+    - name: Cria grupo do Solr
+      group:
+        name: "{{ solr_group }}"
+        state: present
+
+    - name: Cria usuário Solr
+      user:
+        name: "{{ solr_user }}"
+        group: "{{ solr_group }}"
+        system: yes
+        shell: /bin/bash
+        home: "{{ solr_data_dir }}"
+        createhome: no
+
+    - name: Diretórios de instalação do Solr
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ solr_user }}"
+        group: "{{ solr_group }}"
+        mode: '0755'
+      loop:
+        - "{{ solr_home }}"
+        - "{{ solr_data_dir }}"
+        - "{{ solr_data_dir }}/data"
+        - "{{ solr_data_dir }}/logs"
+
+    - name: Transferir Solr via rsync
+      synchronize:
+        src: "{{ local_solr_path }}"
+        dest: "/tmp/solr-{{ solr_version }}-slim.tgz"
+
+    - name: Extrair artefato do Solr
+      unarchive:
+        src: "/tmp/solr-{{ solr_version }}-slim.tgz"
+        dest: /tmp
+        remote_src: yes
+        creates: "/tmp/solr-{{ solr_version }}-slim"
+
+    - name: Enviando arquivos extraidos para o diretório de instalação do Solr
+      shell: |
+        cp -r /tmp/solr-{{ solr_version }}-slim/* {{ solr_home }}/
+        chown -R {{ solr_user }}:{{ solr_group }} {{ solr_home }}
+
+    - name: Envia artefato Lucene-analysis-icu
+      synchronize:
+         src: "{{ home }}/artifacts/lucene-analysis-icu-9.9.0.jar"
+         dest: /opt/solr/server/solr-webapp/webapp/WEB-INF/lib/lucene-analysis-icu-9.9.0.jar
+
+    - name: Envia artefato icu4J
+      synchronize:
+         src: "{{ home }}/artifacts/icu4j-72.1.jar"
+         dest: /opt/solr/server/solr-webapp/webapp/WEB-INF/lib/icu4j-72.1.jar
+
+    - name: Define permissão do Lucene-analysis-icu
+      file:
+         path: /opt/solr/server/solr-webapp/webapp/WEB-INF/lib/lucene-analysis-icu-9.9.0.jar
+         owner: root
+         group: root
+         mode: '0644'
+
+    - name: Define permissão do icu4J
+      file:
+         path: /opt/solr/server/solr-webapp/webapp/WEB-INF/lib/icu4j-72.1.jar
+         owner: root
+         group: root
+         mode: '0644'
+   
+    - name: Ajuste de permissões das libs
+      file:
+        path: "{{ item }}"
+        owner: solr
+        group: solr
+      loop:
+        - /opt/solr/server/solr-webapp/webapp/WEB-INF/lib/lucene-analysis-icu-9.9.0.jar
+        - /opt/solr/server/solr-webapp/webapp/WEB-INF/lib/icu4j-72.1.jar
+
+
+    - name: Limpando arquivos de download
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "/tmp/solr-{{ solr_version }}.tgz"
+        - "/tmp/solr-{{ solr_version }}"

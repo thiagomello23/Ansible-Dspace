@@ -1,0 +1,30 @@
+server {
+    listen 80;
+    server_name {{ DSPACE_SERVER_DOMAIN }};
+
+    # Security Headers
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+
+    # Logs
+    access_log /var/log/nginx/dspace_access.log;
+    error_log /var/log/nginx/dspace_error.log;
+
+      # Proxy all HTTPS requests to "/server" from NGinx to Tomcat on port 8080
+  # These Proxy settings are for the backend. They are described in the backend installation (see above)
+    location /server {
+      proxy_set_header X-Forwarded-Proto https;
+      proxy_set_header X-Forwarded-Host $host;
+      proxy_pass http://localhost:8080/server;
+    }
+ 
+  # [NEW FOR UI:] Proxy all HTTPS requests from NGinx to PM2 on localhost, port 4000
+  # NOTE that this proxy URL must match the "ui" settings in your config.prod.yml
+  # (In this example: https://my.dspace.edu/ will display the User Interface)
+    location / {
+      proxy_set_header X-Forwarded-Proto https;
+      proxy_set_header X-Forwarded-Host $host;
+      proxy_pass http://localhost:4000/;
+    }
+}

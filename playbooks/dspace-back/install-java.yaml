@@ -1,0 +1,12 @@
+- name: Instalando Java 17 no servidor
+  hosts: all
+  become: yes
+  tasks:
+    - name: Atualizando cache do apt
+      apt:
+        update_cache: yes
+
+    - name: Instalando OpenJDK 17
+      apt:
+        name: openjdk-17-jdk
+        state: present

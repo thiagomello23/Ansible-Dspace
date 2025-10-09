@@ -1,0 +1,30 @@
+- name: Configurando PostgreSQL para DSpace
+  hosts: all
+  become: yes
+  vars:
+    postgresql_conf_path: "/etc/postgresql/16/main/postgresql.conf"
+    pg_hba_conf_path: "/etc/postgresql/16/main/pg_hba.conf"
+    dspace_db_user: "dspace"
+    dspace_db_name: "dspace"
+
+  tasks:
+    - name: Habilitando conexões TCP/IP no postgresql.conf
+      lineinfile:
+        path: "{{ postgresql_conf_path }}"
+        regexp: '^#?listen_addresses\s*='
+        line: "listen_addresses = '*'"
+        state: present
+        backup: yes
+
+    - name: Adicionando regra para DSpace no pg_hba.conf
+      lineinfile:
+        path: "{{ pg_hba_conf_path }}"
+        insertafter: BOF  # insere no início do arquivo
+        line: "host {{ dspace_db_name }} {{ dspace_db_user }} 127.0.0.1/32 md5"
+        state: present
+        backup: yes
+
+    - name: Reiniciando PostgreSQL para aplicar mudanças
+      service:
+        name: postgresql
+        state: restarted

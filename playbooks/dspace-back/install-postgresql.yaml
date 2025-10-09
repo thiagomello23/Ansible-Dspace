@@ -1,0 +1,35 @@
+- name: Instalando PostgreSQL no servidor
+  hosts: all
+  become: yes
+  vars:
+    postgresql_version: "16"
+  tasks:
+    - name: Atualizando cache de pacotes
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Instalando dependências para adicionar repositório
+      apt:
+        name: 
+          - gnupg
+          - wget
+          - ca-certificates
+        state: present
+
+    - name: Instalando PostgreSQL
+      apt:
+        name: postgresql
+        state: present
+
+    - name: Instalando Pacotes comuns PostgreSQL
+      apt:
+        name: postgresql-common
+        state: present
+
+    - name: Garantir que o serviço PostgreSQL está ativo e habilitado
+      service:
+        name: postgresql
+        state: started
+        enabled: yes
+

@@ -1,0 +1,14 @@
+- name: Instalando Apache Ant via apt
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Atualizando cache do apt e instalar Ant
+      apt:
+        name: ant
+        state: present
+        update_cache: yes
+        force: yes
+        install_recommends: yes
+      environment:
+        DEBIAN_FRONTEND: noninteractive
