@@ -1,7 +1,8 @@
 
 # Script Ansible para DSpace
 
-O objetivo desse script é instalar, configurar e rodar primariamente as versões DSpace a partir da 7.x quando o DSpace separou em Front e Back.
+O objetivo desse script é instalar, configurar e rodar primariamente as versões DSpace a partir da 7.x quando o DSpace separou em Front e Back. Por padrão
+o projeto é feito para instalar o DSpace 9.x.
 
 ### Requisitos
 
@@ -79,6 +80,20 @@ E para adicionar novas variáveis basta ou colocar hard-coded na própria config
 
 ### Configurações de versão dos artefatos
 
+A maioria das dependencias do DSpace estão em formato de artefato, ou seja elas não são baixadas diretamente da internet, são enviadas para o servidor
+usando o diretório de "/artifacts".
+
+Por padrão o projeto já vem com os artefatos necessários para rodar o DSpace 9.x como Node 22, Maven 3.9.11 e etc. É possível a qualquer momento trocar quais artefatos
+estão sendo utilizados, recomendo manter os mesmos nomes dos artefatos já utilizados apenas substituindo os arquivo, e os arquivos devem estar em mesmo formato, se o arquivo estiver em
+"tar.gz" deve ser mantido da mesma forma.
+
+Artefatos:
+- DSpace Front
+- DSpace Back
+- Apache Maven
+- Icu4j e Lucene (libs necessárias para rodar o Solr)
+- Node
+- Solr
 
 ## Como Funciona
 
