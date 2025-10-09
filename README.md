@@ -99,15 +99,21 @@ Artefatos:
 
 Esse script é dividido em três partes, backend, frontend e certificado. As versões mais recentes do DSpace a partir da 7.x começaram
 a fazer essa separação entre Backend e Frontend então resolvi manter o padrão e se quiser pode instalar apenas um dos dois separadamente
-assim como pode instalar apenas o DSpace e não gerar o certificado pelo script (caso queira por exemplo trocar de proxy reverso).
+assim como pode instalar apenas o DSpace e não gerar o certificado pelo script (caso queira por exemplo usar outro proxy reverso).
 
 Comando para rodar os scripts:
 - ansible-playbook -i inventory.yaml playbooks/deploy-dspace-backend-master.yaml -vvv (Backend)
 - ansible-playbook -i inventory.yaml playbooks/deploy-dspace-front-master.yaml -vvv (Frontend)
 - ansible-playbook -i inventory.yaml playbooks/deploy-nginx-certificate-master.yaml -vvv (Certificates)
 
-Por padrão são instalados dois daemons básicos para o controle do backend, um para o próprio DSpace e o outro para o Solr, uma dependência do DSpace.
+Por padrão são instalados dois daemons básicos para o controle do backend, um para o próprio DSpace e o outro para o Solr, uma dependência do DSpace, ambos
+podem ser sobrescritos caso queria configurações a mais no daemon.
+
+Daemons:
 - /daemons/dspace.service
 - /daemons/solr.service
 
 Para o gerenciamento do Frontend do DSpace é utilizado o PM2.
+
+Os objetos do script como daemons, artefatos, templates e etc são todos arquivos enviados para o servidor.
+
