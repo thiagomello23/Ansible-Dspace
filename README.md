@@ -7,7 +7,7 @@ o projeto é feito para instalar o DSpace 9.x.
 ### Requisitos
 
 - Ter ansible instalado e uma chave SSH para ele se conectar com os servidores do qual vai rodar o script.
-- As maquinas que o DSpace vai ser instalado precisam necessáriamente serem derivadas do Debian por conta do uso do gerenciador de pacotes APT (Ex: Ubuntu).
+- As maquinas que o DSpace vai ser instalado precisam necessáriamente serem derivadas do Debian por conta do uso do gerenciador de pacotes APT (Ex: Ubuntu e Debian).
 
 ## Configuração
 
@@ -94,17 +94,20 @@ Artefatos:
 - Icu4j e Lucene (libs necessárias para rodar o Solr)
 - Node
 - Solr
+- PSQL
+- Java 17
 
 ## Como Funciona
 
-Esse script é dividido em três partes, backend, frontend e certificado. As versões mais recentes do DSpace a partir da 7.x começaram
+Esse script é dividido em quatro partes, pacotes comuns, backend, frontend e certificado. As versões mais recentes do DSpace a partir da 7.x começaram
 a fazer essa separação entre Backend e Frontend então resolvi manter o padrão e se quiser pode instalar apenas um dos dois separadamente
 assim como pode instalar apenas o DSpace e não gerar o certificado pelo script (caso queira por exemplo usar outro proxy reverso).
 
 Comando para rodar os scripts:
+- ansible-playbook -i inventory.yaml playbooks/install-common-dependencies.yaml -vvv (Obrigatório)
 - ansible-playbook -i inventory.yaml playbooks/deploy-dspace-backend-master.yaml -vvv (Backend)
 - ansible-playbook -i inventory.yaml playbooks/deploy-dspace-front-master.yaml -vvv (Frontend)
-- ansible-playbook -i inventory.yaml playbooks/deploy-nginx-certificate-master.yaml -vvv (Certificates)
+- ansible-playbook -i inventory.yaml playbooks/deploy-nginx-certificate-master.yaml -vvv (Certificados)
 
 Por padrão são instalados dois daemons básicos para o controle do backend, um para o próprio DSpace e o outro para o Solr, uma dependência do DSpace, ambos
 podem ser sobrescritos caso queria configurações a mais no daemon.
