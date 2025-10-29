@@ -1,6 +1,7 @@
 dspace_prod:
   hosts:
     dspace_host_01:
-      ansible_host: 54.210.134.241
+      ansible_host: 44.213.129.92
   vars:
       home: /home/fasipe/ansible-for-dspace
+      artifact: /home/fasipe/ansible-for-dspace/artifacts

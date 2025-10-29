@@ -114,6 +114,7 @@
      become_user: "{{ dspace_user }}"
      environment:
       PATH: "/opt/maven/apache-maven-3.9.11/bin:{{ ansible_env.PATH }}"
+      JAVA_HOME: "/usr/lib/jvm/jdk-17.0.6/"
 
    - name: Criando diretório de instalação do DSpace
      file:

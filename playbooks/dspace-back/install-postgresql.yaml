@@ -17,14 +17,23 @@
           - ca-certificates
         state: present
 
-    - name: Instalando PostgreSQL
-      apt:
-        name: postgresql
-        state: present
+    - name: Adicionando repositório oficial do PostgreSQL
+      shell: |
+        echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
+        wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /etc/apt/trusted.gpg.d/pgdg.gpg
+      args:
+        creates: /etc/apt/sources.list.d/pgdg.list
 
-    - name: Instalando Pacotes comuns PostgreSQL
+    - name: Atualizando cache de pacotes após adicionar repositório
       apt:
-        name: postgresql-common
+        update_cache: yes
+
+    - name: Instalando PostgreSQL {{ postgresql_version }} e cliente correspondente
+      apt:
+        name:
+          - "postgresql-{{ postgresql_version }}"
+          - "postgresql-client-{{ postgresql_version }}"
+          - "postgresql-common"
         state: present
 
     - name: Garantir que o serviço PostgreSQL está ativo e habilitado
@@ -32,4 +41,3 @@
         name: postgresql
         state: started
         enabled: yes
-

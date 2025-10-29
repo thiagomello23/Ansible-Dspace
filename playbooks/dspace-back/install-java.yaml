@@ -3,7 +3,7 @@
   become: yes
   vars:
     java_offline_tar: "openjdk17.tar.gz"
-    java_home: "/usr/lib/jvm/jdk-17"
+    java_home: "/usr/lib/jvm/jdk-17.0.6"
 
   tasks:
     - name: Enviando artifact do Java 17
@@ -27,6 +27,13 @@
       copy:
         dest: /etc/profile.d/java.sh
         content: |
-          export JAVA_HOME=/usr/lib/jvm/jdk-17.0.6
+          export JAVA_HOME={{ java_home }}
           export PATH=$JAVA_HOME/bin:$PATH
         mode: '0755'
+
+    - name: Configurando JAVA_HOME no ambiente global (systemd)
+      copy:
+        dest: /etc/environment
+        content: |
+          JAVA_HOME={{ java_home }}
+          PATH="{{ java_home }}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"

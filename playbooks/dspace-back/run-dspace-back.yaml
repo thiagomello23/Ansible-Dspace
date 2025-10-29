@@ -9,8 +9,8 @@
       copy:
         src: "{{home}}/daemons/dspace.service"
         dest: /etc/systemd/system/dspace.service
-        owner: ubuntu
-        group: ubuntu
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
         mode: '0644'
 
     - name: Recarrega o systemd
