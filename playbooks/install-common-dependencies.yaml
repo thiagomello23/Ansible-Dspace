@@ -1,0 +1,11 @@
+- name: Instalando Dependencias padrão
+  hosts: all
+  become: yes
+  vars:
+
+  tasks:
+  - name: Instalar rsync
+    apt:
+      name: rsync
+      state: present
+      update_cache: yes

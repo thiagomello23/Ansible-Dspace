@@ -2,7 +2,7 @@
   hosts: all
   become: yes
   vars:
-    user_name: ubuntu
+    user_name: "{{ ansible_user }}"
     nvm_version: v0.39.7
     node_version: "20"
 

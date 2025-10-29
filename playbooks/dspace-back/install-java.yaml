@@ -1,12 +1,39 @@
 - name: Instalando Java 17 no servidor
   hosts: all
   become: yes
-  tasks:
-    - name: Atualizando cache do apt
-      apt:
-        update_cache: yes
+  vars:
+    java_offline_tar: "openjdk17.tar.gz"
+    java_home: "/usr/lib/jvm/jdk-17.0.6"
 
-    - name: Instalando OpenJDK 17
-      apt:
-        name: openjdk-17-jdk
-        state: present
+  tasks:
+    - name: Enviando artifact do Java 17
+      synchronize:
+        src: "{{ home }}/artifacts/{{ java_offline_tar }}"
+        dest: "/tmp/{{ java_offline_tar }}"
+
+    - name: Criando diretório necessário do JVM
+      file:
+        path: "/usr/lib/jvm"
+        state: directory
+        mode: '0755'
+
+    - name: Descompactando o pacote
+      unarchive:
+        src: "/tmp/{{ java_offline_tar }}"
+        dest: "/usr/lib/jvm/"
+        remote_src: yes
+
+    - name: Configurando variáveis de ambiente do Java
+      copy:
+        dest: /etc/profile.d/java.sh
+        content: |
+          export JAVA_HOME={{ java_home }}
+          export PATH=$JAVA_HOME/bin:$PATH
+        mode: '0755'
+
+    - name: Configurando JAVA_HOME no ambiente global (systemd)
+      copy:
+        dest: /etc/environment
+        content: |
+          JAVA_HOME={{ java_home }}
+          PATH="{{ java_home }}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
