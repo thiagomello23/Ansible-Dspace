@@ -68,7 +68,7 @@
         password: "{{ db_password }}"
         role_attr_flags: NOSUPERUSER
      become: yes
-     become_user: postgres   # 👈 roda como o usuário postgres do sistema
+     become_user: postgres   
 
    - name: Criando banco de dados
      community.postgresql.postgresql_db:
@@ -76,7 +76,7 @@
         owner: "{{ db_user }}"
         encoding: "UNICODE"
      become: yes
-     become_user: postgres   # 👈 idem
+     become_user: postgres   
 
    - name: Habilita extensão pgcrypto no PostgreSQL
      become: yes
